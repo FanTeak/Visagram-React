@@ -4,7 +4,7 @@ const BASE_URL = 'http://localhost:56625/api/';
 
 export const ENDPIONTS = {
     STAFF: 'Staff',
-    SALARYDETAIL: 'SalaryDetail',
+    SALARYOFFER: 'SalaryOffer',
     PAYMENT: 'Payment'
 }
 

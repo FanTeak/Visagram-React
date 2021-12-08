@@ -34,6 +34,20 @@ const useStyles = makeStyles(theme => ({
 export default function PaymentForm(props){
     const {values, errors, handleInputChange} = props;
     const classes = useStyles();
+    const [staffList, setStaffList] = useState([]);
+
+    useEffect(() => {
+        createAPIEndpoint(ENDPIONTS.STAFF).fetchAll()
+            .then(res => {
+                let staffList = res.data.map(item => ({
+                    id: item.staffId,
+                    title: item.staffName + " " + item.staffSurname + " " + item.phone
+                }));
+                staffList = [{ id: 0, title: 'Select' }].concat(staffList);
+                setStaffList(staffList);
+            })
+            .catch(err => console.log(err))
+    }, [])
 
     return (
         <Form>
@@ -53,13 +67,7 @@ export default function PaymentForm(props){
                     name="staffId" 
                     value={values.staffId}
                     onChange = {handleInputChange}
-                    options={[
-                        {id:0, title:"Select"},
-                        {id:1, title:"Customer 1"},
-                        {id:2, title:"Customer 2"},
-                        {id:3, title:"Customer 3"},
-                        {id:4, title:"Customer 4"}
-                    ]}/>
+                    options={staffList}/>
                 </Grid>
                 <Grid item xs={6}>
                 <Select 

@@ -1,7 +1,8 @@
 import { Grid, InputAdornment, makeStyles, ButtonGroup, Button as MuiButton } from '@material-ui/core'
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import Form from "../../layouts/Form"
 import { Input, Select, Button } from "../../controls";
+import {createAPIEndpoint, ENDPIONTS} from "../../api";
 
 const pMethods = [
     { id: 'none', title: 'Select' },
@@ -83,13 +84,11 @@ export default function PaymentForm(props){
                             <MuiButton
                                 size="small"
                                 //onClick={resetForm}
-                                
                             >All</MuiButton>
                         </ButtonGroup>
                         <Button
                             size="large"
                             //onClick={openListOfOrders}
-                            
                         >Details</Button>
                 </Grid>
             </Grid>

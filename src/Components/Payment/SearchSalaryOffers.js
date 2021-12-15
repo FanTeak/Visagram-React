@@ -1,6 +1,7 @@
-import { List, ListItem, ListItemText } from '@material-ui/core';
+import { List, ListItem, ListItemText, Paper, InputBase, IconButton } from '@material-ui/core';
 import React, {useState, useEffect} from 'react';
 import { createAPIEndpoint, ENDPIONTS } from "../../api";
+//import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 
 export default function SearchSalaryOffers(){
 
@@ -16,14 +17,25 @@ export default function SearchSalaryOffers(){
     }, [])
 
     return (
-        <List>
-            {
-                salaryOffers.map((item, idx)=>(
-                    <ListItem key={idx}>
-                        <ListItemText primary={item.offerName}></ListItemText>
-                    </ListItem>
-                ))
-            }
-        </List>
+        <>
+            <Paper>
+                <InputBase placeholder="Search salary offers"/>
+                <IconButton>
+                    //<ManageSearchIcon/>
+                </IconButton>
+            </Paper>
+            <List>
+                {
+                    salaryOffers.map((item, idx)=>(
+                        <ListItem key={idx}>
+                            <ListItemText 
+                                primary={item.offerName}
+                                secondary={'$' + item.offerValue}>
+                            </ListItemText>
+                        </ListItem>
+                    ))
+                }
+            </List>
+        </>
     )
 }

@@ -3,6 +3,9 @@ import React, {useState, useEffect} from 'react'
 import Form from "../../layouts/Form"
 import { Input, Select, Button } from "../../controls";
 import {createAPIEndpoint, ENDPIONTS} from "../../api";
+import PaidIcon from '@mui/icons-material/Paid';
+import ReplayCircleFilledIcon from '@mui/icons-material/ReplayCircleFilled';
+import TocIcon from '@mui/icons-material/Toc';
 
 const pMethods = [
     { id: 'none', title: 'Select' },
@@ -88,16 +91,21 @@ export default function PaymentForm(props){
                     <ButtonGroup className={classes.submitButtonGroup}>
                             <MuiButton
                                 size="large"
-                                type="submit">Submit</MuiButton>
+                                endIcon={<PaidIcon/>}
+                                type="submit">Submit
+                            </MuiButton>
                             <MuiButton
                                 size="small"
+                                startIcon={<ReplayCircleFilledIcon/>}
                                 //onClick={resetForm}
-                            >All</MuiButton>
+                            >
+                            </MuiButton>
                         </ButtonGroup>
                         <Button
                             size="large"
+                            startIcon={<TocIcon/>}
                             //onClick={openListOfOrders}
-                        >Details</Button>
+                        ></Button>
                 </Grid>
             </Grid>
         </Form>

@@ -1,7 +1,8 @@
-import { List, ListItem, ListItemText, Paper, InputBase, IconButton } from '@material-ui/core';
+import { List, ListItem, ListItemText, Paper, InputBase, IconButton, makeStyles } from '@material-ui/core';
 import React, {useState, useEffect} from 'react';
 import { createAPIEndpoint, ENDPIONTS } from "../../api";
-//import ManageSearchIcon from '@mui/icons-material/ManageSearch';
+import ManageSearchIcon from '@mui/icons-material/ManageSearch';
+
 
 export default function SearchSalaryOffers(){
 
@@ -21,7 +22,7 @@ export default function SearchSalaryOffers(){
             <Paper>
                 <InputBase placeholder="Search salary offers"/>
                 <IconButton>
-                    //<ManageSearchIcon/>
+                    <ManageSearchIcon/>
                 </IconButton>
             </Paper>
             <List>

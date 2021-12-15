@@ -5,7 +5,7 @@ const BASE_URL = 'http://localhost:56625/api/';
 export const ENDPIONTS = {
     STAFF: 'Staff',
     SALARYOFFER: 'SalaryOffer',
-    PAYMENT: 'Payment'
+    SALARYPAYMENT: 'SalaryPayment'
 }
 
 export const createAPIEndpoint = endpoint => {

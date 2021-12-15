@@ -1,6 +1,9 @@
 import React from 'react'
 import PaymentForm from './PaymentForm'
 import { useForm } from '../../hooks/useForm';
+import SearchSalaryOffers from './SearchSalaryOffers';
+import { Grid } from '@material-ui/core';
+import SelectedSalaryOffers from './SelectedSalaryOffers';
 
 const generateSalaryNumber = () => Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -26,8 +29,16 @@ export default function Payment(){
     }=useForm(getFreshModelObject);
 
     return (
-    <PaymentForm
-    {...{values, errors, handleInputChange}}
-    />
+    <Grid container>
+        <Grid items xs={12}>
+        <   PaymentForm {...{values, errors, handleInputChange}}/>
+        </Grid>
+        <Grid items xs={6}>
+            <SearchSalaryOffers></SearchSalaryOffers>
+        </Grid>
+        <Grid items xs={6}>
+            <SelectedSalaryOffers></SelectedSalaryOffers>
+        </Grid>
+    </Grid>
     )
 }

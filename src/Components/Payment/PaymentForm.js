@@ -6,6 +6,7 @@ import {createAPIEndpoint, ENDPIONTS} from "../../api";
 import PaidIcon from '@mui/icons-material/Paid';
 import ReplayCircleFilledIcon from '@mui/icons-material/ReplayCircleFilled';
 import TocIcon from '@mui/icons-material/Toc';
+import { roundTo2DecimalPoint } from '../../utils'
 
 const pMethods = [
     { id: 'none', title: 'Select' },
@@ -35,7 +36,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function PaymentForm(props){
-    const {values, errors, handleInputChange} = props;
+    const {values, setValues, errors, setErrors, handleInputChange} = props;
     const classes = useStyles();
     const [staffList, setStaffList] = useState([]);
 
@@ -52,8 +53,51 @@ export default function PaymentForm(props){
             .catch(err => console.log(err))
     }, [])
 
+    useEffect(() => {
+        let gTotal = values.salaryDetails.reduce((tempTotal, item) => {
+            return tempTotal + (item.quantity * item.salaryOfferValue);
+        }, 0);
+        setValues({
+            ...values,
+            total: roundTo2DecimalPoint(gTotal)
+        })
+
+    }, [JSON.stringify(values.salaryDetails)]);
+
+    const validateForm = () => {
+        let temp = {};
+        temp.staffId = values.staffId != 0 ? "" : "This field is required.";
+        temp.paymentType = values.paymentType != "none" ? "" : "This field is required.";
+        temp.orderDetails = values.salaryDetails.length != 0 ? "" : "This field is required.";
+        setErrors({ ...temp });
+        return Object.values(temp).every(x => x === "");
+    }
+
+    const submitPayment = e => {
+        e.preventDefault();
+        if (validateForm()) {
+            /*if (values.orderMasterId == 0) {
+                createAPIEndpoint(ENDPIONTS.ORDER).create(values)
+                    .then(res => {
+                        resetFormControls();
+                        setNotify({isOpen:true, message:'New order is created.'});
+                    })
+                    .catch(err => console.log(err));
+            }
+            else {
+                createAPIEndpoint(ENDPIONTS.ORDER).update(values.orderMasterId, values)
+                    .then(res => {
+                        setOrderId(0);
+                        setNotify({isOpen:true, message:'The order is updated.'});
+                    })
+                    .catch(err => console.log(err));
+            }*/
+        }
+
+    }
+
     return (
-        <Form>
+        <Form onSubmit={submitPayment}>
             <Grid container>
                 <Grid item xs={6}>
                     <Input 
@@ -70,20 +114,22 @@ export default function PaymentForm(props){
                     name="staffId" 
                     value={values.staffId}
                     onChange = {handleInputChange}
-                    options={staffList}/>
+                    options={staffList}
+                    error={errors.staffId}/>
                 </Grid>
                 <Grid item xs={6}>
                 <Select 
                     label="Payment Method" 
-                    name="pMethod"
-                    value={values.pMethod}
+                    name="paymentType"
+                    value={values.paymentType}
                     onChange = {handleInputChange}
-                    options={pMethods}/>
+                    options={pMethods}
+                    error={errors.paymentType}/>
                     <Input 
                     label="Total" 
-                    name="totalPayment" 
+                    name="total" 
                     disabled 
-                    value={values.totalPayment}
+                    value={values.total}
                     InputProps={{
                         startAdornment: <InputAdornment className={classes.adornmentText} position="start">$</InputAdornment>
                     }}

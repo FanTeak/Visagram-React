@@ -2,6 +2,7 @@ import { List, Paper, ListItem, ListItemText, ListItemSecondaryAction, IconButto
 import React from 'react';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import { roundTo2DecimalPoint } from '../../utils'
+import { fontStyle } from '@mui/system';
 
 const useStyles = makeStyles(theme => ({
     paperRoot: {
@@ -66,6 +67,17 @@ export default function SelectedSalaryOffers(props){
     return (
         <List>
             {
+                selectedSalaryOffers.length == 0 ? 
+                <ListItem>
+                    <ListItemText 
+                    primary="Please select salary offer"
+                    primaryTypographyProps={{
+                        style:{
+                            textAlign: 'center',
+                            fontStyle: 'italic'
+                        }
+                    }}/>
+                </ListItem> : 
                 selectedSalaryOffers.map((item, idx)=>(
                     <Paper key={idx} className={classes.paperRoot}>
                         <ListItem>

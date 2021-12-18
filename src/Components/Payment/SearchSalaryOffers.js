@@ -37,12 +37,13 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function SearchSalaryOffers(props){
-    const {addSalaryOffer, selectedSalaryOffers} = props;
+    const {values, setValues} = props;
     const [salaryOffers, setSalaryOffers] = useState([]);
     const [searchList, setSearchList] = useState([]);
     const [searchKey, setSearchKey] = useState('');
     const classes = useStyles();
 
+    let selectedSalaryOffers = values.salaryDetails;
     useEffect(() => {
         createAPIEndpoint(ENDPIONTS.SALARYOFFER).fetchAll()
             .then(res => {
@@ -62,6 +63,21 @@ export default function SearchSalaryOffers(props){
         setSearchList(x);
     }, [searchKey, selectedSalaryOffers])
 
+    const addSalaryOffer = salaryOffer => {
+        let x = {
+            salaryPaymentId: values.paymentId,
+            salaryDetailsId: 0,
+            salaryOfferId: salaryOffer.salaryOfferId,
+            quantity: 1,
+            salaryOfferValue: salaryOffer.offerValue,
+            offerName: salaryOffer.offerName
+        }
+        setValues({
+            ...values,
+            salaryDetails: [...values.salaryDetails, x]
+        })
+    }
+
     return (
         <>
             <Paper className={classes.searchPaper}>
@@ -77,7 +93,9 @@ export default function SearchSalaryOffers(props){
             <List className={classes.listRoot}>
                 {
                     searchList.map((item, idx)=>(
-                        <ListItem key={idx}>
+                        <ListItem 
+                        key={idx}
+                        onClick={e=>addSalaryOffer(item)}>
                             <ListItemText 
                                 primary={item.offerName}
                                 secondary={'₴' + item.offerValue}>

@@ -14,8 +14,8 @@ const getFreshModelObject = () => ({
     staffId: 0,
     paymentType: 'none',
     total: 0,
-    deletedSalaryDetailsIds:'',
-    orderDetails: []
+    deletedSalaryItemIds:'',
+    salaryDetails: []
 })
 
 export default function Payment(){
@@ -28,16 +28,41 @@ export default function Payment(){
         resetFormControls
     }=useForm(getFreshModelObject);
 
+const addSalaryOffer = salaryOffer => {
+    let x = {
+        salaryPaymentId: values.paymentId,
+        salaryDetailsId: 0,
+        salaryOfferId: salaryOffer.salaryOfferId,
+        quantity: 1,
+        salaryOfferValue: salaryOffer.offerValue,
+        offerName: salaryOffer.offerName
+    }
+    setValues({
+        ...values,
+        salaryDetails: [...values.salaryDetails, x]
+    })
+}
+
+const removeSalaryOffer = (index, id) => {
+    debugger;
+    let x = { ...values };
+    x.salaryDetails = x.salaryDetails.filter((_, i) => i != index);
+    if (id != 0)
+        x.deletedSalaryItemIds += id + ',';
+    setValues({ ...x });
+}
+
     return (
-    <Grid container>
+    <Grid container spacing={2}>
         <Grid items xs={12}>
         <   PaymentForm {...{values, errors, handleInputChange}}/>
         </Grid>
         <Grid items xs={6}>
-            <SearchSalaryOffers></SearchSalaryOffers>
+            <SearchSalaryOffers {...{addSalaryOffer, selectedSalaryOffers:values.salaryDetails}}/>
         </Grid>
         <Grid items xs={6}>
-            <SelectedSalaryOffers></SelectedSalaryOffers>
+            <SelectedSalaryOffers
+            {...{selectedSalaryOffers:values.salaryDetails, removeSalaryOffer}}/>
         </Grid>
     </Grid>
     )

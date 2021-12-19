@@ -31,7 +31,7 @@ export default function Payment(){
     return (
     <Grid container spacing={2}>
         <Grid items xs={12}>
-        <   PaymentForm {...{values, setValues, errors, setErrors, handleInputChange}}/>
+        <   PaymentForm {...{values, setValues, errors, setErrors, handleInputChange, resetFormControls}}/>
         </Grid>
         <Grid items xs={6}>
             <SearchSalaryOffers {...{values, setValues}}/>

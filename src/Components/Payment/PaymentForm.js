@@ -7,6 +7,8 @@ import PaidIcon from '@mui/icons-material/Paid';
 import ReplayCircleFilledIcon from '@mui/icons-material/ReplayCircleFilled';
 import TocIcon from '@mui/icons-material/Toc';
 import { roundTo2DecimalPoint } from '../../utils'
+import Popup from '../../layouts/Popup';
+import PaymentList from './PaymentList'
 
 const pMethods = [
     { id: 'none', title: 'Select' },
@@ -36,9 +38,10 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function PaymentForm(props){
-    const {values, setValues, errors, setErrors, handleInputChange} = props;
+    const {values, setValues, errors, setErrors, handleInputChange, resetFormControls} = props;
     const classes = useStyles();
     const [staffList, setStaffList] = useState([]);
+    const [paymentListVisibility, setPaymentListVisibility] = useState(false);
 
     useEffect(() => {
         createAPIEndpoint(ENDPIONTS.STAFF).fetchAll()
@@ -76,84 +79,96 @@ export default function PaymentForm(props){
     const submitPayment = e => {
         e.preventDefault();
         if (validateForm()) {
-            /*if (values.orderMasterId == 0) {
-                createAPIEndpoint(ENDPIONTS.ORDER).create(values)
+            if (values.paymentId == 0) {
+                createAPIEndpoint(ENDPIONTS.SALARYPAYMENT).create(values)
                     .then(res => {
                         resetFormControls();
-                        setNotify({isOpen:true, message:'New order is created.'});
+                        //setNotify({isOpen:true, message:'New payment is created.'});
                     })
                     .catch(err => console.log(err));
             }
             else {
-                createAPIEndpoint(ENDPIONTS.ORDER).update(values.orderMasterId, values)
+                createAPIEndpoint(ENDPIONTS.SALARYPAYMENT).update(values.paymentId, values)
                     .then(res => {
-                        setOrderId(0);
-                        setNotify({isOpen:true, message:'The order is updated.'});
+                        //setOrderId(0);
+                        //setNotify({isOpen:true, message:'The payment is updated.'});
                     })
                     .catch(err => console.log(err));
-            }*/
+            }
         }
 
     }
 
+    const openListOfPayments = ()=>{
+        setPaymentListVisibility(true);
+    }
+
     return (
-        <Form onSubmit={submitPayment}>
-            <Grid container>
-                <Grid item xs={6}>
-                    <Input 
-                    label="Payment Number" 
-                    name="paymentNumber" 
-                    disabled 
-                    value={values.paymentNumber}
-                    InputProps={{
-                        startAdornment: <InputAdornment className={classes.adornmentText} position="start">#</InputAdornment>
-                    }}
-                    />
+        <>
+            <Form onSubmit={submitPayment}>
+                <Grid container>
+                    <Grid item xs={6}>
+                        <Input 
+                        label="Payment Number" 
+                        name="paymentNumber" 
+                        disabled 
+                        value={values.paymentNumber}
+                        InputProps={{
+                            startAdornment: <InputAdornment className={classes.adornmentText} position="start">#</InputAdornment>
+                        }}
+                        />
+                        <Select 
+                        label="staff" 
+                        name="staffId" 
+                        value={values.staffId}
+                        onChange = {handleInputChange}
+                        options={staffList}
+                        error={errors.staffId}/>
+                    </Grid>
+                    <Grid item xs={6}>
                     <Select 
-                    label="staff" 
-                    name="staffId" 
-                    value={values.staffId}
-                    onChange = {handleInputChange}
-                    options={staffList}
-                    error={errors.staffId}/>
-                </Grid>
-                <Grid item xs={6}>
-                <Select 
-                    label="Payment Method" 
-                    name="paymentType"
-                    value={values.paymentType}
-                    onChange = {handleInputChange}
-                    options={pMethods}
-                    error={errors.paymentType}/>
-                    <Input 
-                    label="Total" 
-                    name="total" 
-                    disabled 
-                    value={values.total}
-                    InputProps={{
-                        startAdornment: <InputAdornment className={classes.adornmentText} position="start">$</InputAdornment>
-                    }}
-                    />
-                    <ButtonGroup className={classes.submitButtonGroup}>
-                            <MuiButton
+                        label="Payment Method" 
+                        name="paymentType"
+                        value={values.paymentType}
+                        onChange = {handleInputChange}
+                        options={pMethods}
+                        error={errors.paymentType}/>
+                        <Input 
+                        label="Total" 
+                        name="total" 
+                        disabled 
+                        value={values.total}
+                        InputProps={{
+                            startAdornment: <InputAdornment className={classes.adornmentText} position="start">$</InputAdornment>
+                        }}
+                        />
+                        <ButtonGroup className={classes.submitButtonGroup}>
+                                <MuiButton
+                                    size="large"
+                                    endIcon={<PaidIcon/>}
+                                    type="submit">Submit
+                                </MuiButton>
+                                <MuiButton
+                                    size="small"
+                                    startIcon={<ReplayCircleFilledIcon/>}
+                                    //onClick={resetForm}
+                                >
+                                </MuiButton>
+                            </ButtonGroup>
+                            <Button
                                 size="large"
-                                endIcon={<PaidIcon/>}
-                                type="submit">Submit
-                            </MuiButton>
-                            <MuiButton
-                                size="small"
-                                startIcon={<ReplayCircleFilledIcon/>}
-                                //onClick={resetForm}
-                            >
-                            </MuiButton>
-                        </ButtonGroup>
-                        <Button
-                            size="large"
-                            startIcon={<TocIcon/>}
-                            //onClick={openListOfOrders}
-                        ></Button>
+                                startIcon={<TocIcon/>}
+                                onClick={openListOfPayments}
+                            ></Button>
+                    </Grid>
                 </Grid>
-            </Grid>
-        </Form>
+            </Form>
+            <Popup 
+                title="List of Payments"
+                openPopup={paymentListVisibility}
+                setOpenPopup={setPaymentListVisibility}>
+                    <PaymentList/>
+            </Popup>
+        </>
     )
 }

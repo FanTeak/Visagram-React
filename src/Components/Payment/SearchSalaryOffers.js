@@ -43,7 +43,7 @@ export default function SearchSalaryOffers(props){
     const [searchKey, setSearchKey] = useState('');
     const classes = useStyles();
 
-    let selectedSalaryOffers = values.salaryDetails;
+    let selectedSalaryOffers = values.orderDetails;
     useEffect(() => {
         createAPIEndpoint(ENDPIONTS.SALARYOFFER).fetchAll()
             .then(res => {
@@ -74,7 +74,7 @@ export default function SearchSalaryOffers(props){
         }
         setValues({
             ...values,
-            salaryDetails: [...values.salaryDetails, x]
+            orderDetails: [...values.orderDetails, x]
         })
     }
 

@@ -8,7 +8,7 @@ function App() {
   return (
     <Container maxWidth="md">
       <Typography gutterBottom variant="h2" align="center">
-        Visagram App
+        Visagram
       </Typography>
       <Payment/>
     </Container>

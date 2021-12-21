@@ -9,6 +9,7 @@ import TocIcon from '@mui/icons-material/Toc';
 import { roundTo2DecimalPoint } from '../../utils'
 import Popup from '../../layouts/Popup';
 import PaymentList from './PaymentList'
+import Notification from '../../layouts/Notification'
 
 const pMethods = [
     { id: 'none', title: 'Select' },
@@ -42,6 +43,8 @@ export default function PaymentForm(props){
     const classes = useStyles();
     const [staffList, setStaffList] = useState([]);
     const [paymentListVisibility, setPaymentListVisibility] = useState(false);
+    const [paymentId, setPaymentId] = useState(0);
+    const [notify, setNotify] = useState({isOpen : false});
 
     useEffect(() => {
         createAPIEndpoint(ENDPIONTS.STAFF).fetchAll()
@@ -57,21 +60,37 @@ export default function PaymentForm(props){
     }, [])
 
     useEffect(() => {
-        let gTotal = values.salaryDetails.reduce((tempTotal, item) => {
+        let gTotal = values.orderDetails.reduce((tempTotal, item) => {
             return tempTotal + (item.quantity * item.salaryOfferValue);
         }, 0);
         setValues({
             ...values,
             total: roundTo2DecimalPoint(gTotal)
-        })
+        });
 
-    }, [JSON.stringify(values.salaryDetails)]);
+    }, [JSON.stringify(values.orderDetails)]);
+
+    useEffect(() => {
+        if (paymentId == 0){
+            resetFormControls();
+        }
+        else {
+            createAPIEndpoint(ENDPIONTS.SALARYPAYMENT).fetchById(paymentId)
+                .then(res => {
+                    console.log("qwerty");
+                    console.log(res.data);
+                    setValues(res.data);
+                    setErrors({});
+                })
+                .catch(err => console.log(err));
+        }
+    }, [paymentId]);
 
     const validateForm = () => {
         let temp = {};
         temp.staffId = values.staffId != 0 ? "" : "This field is required.";
         temp.paymentType = values.paymentType != "none" ? "" : "This field is required.";
-        temp.orderDetails = values.salaryDetails.length != 0 ? "" : "This field is required.";
+        temp.orderDetails = values.orderDetails.length != 0 ? "" : "This field is required.";
         setErrors({ ...temp });
         return Object.values(temp).every(x => x === "");
     }
@@ -83,20 +102,25 @@ export default function PaymentForm(props){
                 createAPIEndpoint(ENDPIONTS.SALARYPAYMENT).create(values)
                     .then(res => {
                         resetFormControls();
-                        //setNotify({isOpen:true, message:'New payment is created.'});
+                        setNotify({isOpen:true, message:'New payment is created.'});
                     })
                     .catch(err => console.log(err));
             }
             else {
                 createAPIEndpoint(ENDPIONTS.SALARYPAYMENT).update(values.paymentId, values)
                     .then(res => {
-                        //setOrderId(0);
-                        //setNotify({isOpen:true, message:'The payment is updated.'});
+                        setPaymentId(0);
+                        setNotify({isOpen:true, message:'The payment is updated.'});
                     })
                     .catch(err => console.log(err));
             }
         }
 
+    }
+
+    const resetForm = () => {
+        resetFormControls();
+        setPaymentId(0);
     }
 
     const openListOfPayments = ()=>{
@@ -151,7 +175,7 @@ export default function PaymentForm(props){
                                 <MuiButton
                                     size="small"
                                     startIcon={<ReplayCircleFilledIcon/>}
-                                    //onClick={resetForm}
+                                    onClick={resetForm}
                                 >
                                 </MuiButton>
                             </ButtonGroup>
@@ -167,8 +191,10 @@ export default function PaymentForm(props){
                 title="List of Payments"
                 openPopup={paymentListVisibility}
                 setOpenPopup={setPaymentListVisibility}>
-                    <PaymentList/>
+                    <PaymentList {...{setPaymentId, setPaymentListVisibility, resetFormControls, setNotify}}/>
             </Popup>
+            <Notification
+                {...{ notify, setNotify }} />
         </>
     )
 }

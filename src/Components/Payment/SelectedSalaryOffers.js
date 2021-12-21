@@ -41,14 +41,15 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function SelectedSalaryOffers(props){
+    console.log(props);
     const{values, setValues} = props;
     const classes = useStyles();
 
-    let selectedSalaryOffers = values.salaryDetails;
+    let selectedSalaryOffers = values.orderDetails;
 
     const updateQuantity = (idx, value) => {
         let x = { ...values };
-        let salaryOffer = x.salaryDetails[idx];
+        let salaryOffer = x.orderDetails[idx];
         if (salaryOffer.quantity + value > 0) {
             salaryOffer.quantity += value;
             setValues({ ...x });
@@ -58,7 +59,7 @@ export default function SelectedSalaryOffers(props){
     const removeSalaryOffer = (index, id) => {
         debugger;
         let x = { ...values };
-        x.salaryDetails = x.salaryDetails.filter((_, i) => i != index);
+        x.orderDetails = x.orderDetails.filter((_, i) => i != index);
         if (id != 0)
             x.deletedSalaryItemIds += id + ',';
         setValues({ ...x });
@@ -67,7 +68,7 @@ export default function SelectedSalaryOffers(props){
     return (
         <List>
             {
-                selectedSalaryOffers.length == 0 ? 
+                selectedSalaryOffers.length  == 0 ?
                 <ListItem>
                     <ListItemText 
                     primary="Please select salary offer"

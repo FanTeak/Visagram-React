@@ -15,7 +15,7 @@ const getFreshModelObject = () => ({
     paymentType: 'none',
     total: 0,
     deletedSalaryItemIds:'',
-    salaryDetails: []
+    orderDetails: []
 })
 
 export default function Payment(){

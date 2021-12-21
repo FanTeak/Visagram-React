@@ -4,7 +4,8 @@ import {createAPIEndpoint, ENDPIONTS} from '../../api'
 import Table from '../../layouts/Table'
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 
-export default function PaymentList(){
+export default function PaymentList(props){
+    const {setPaymentId, setPaymentListVisibility, resetFormControls, setNotify} = props;
     const [paymentList, setPaymentList] = useState([]);
 
     useEffect(()=>{
@@ -14,6 +15,24 @@ export default function PaymentList(){
             })
             .catch(err => console.log(err))
     }, [])
+
+    const showForUpdate = id => {
+        setPaymentId(id);
+        setPaymentListVisibility(false);
+    }
+
+    const deletePayment = id => {
+        if (window.confirm('Are you sure to delete this record?')) {
+            createAPIEndpoint(ENDPIONTS.SALARYPAYMENT).delete(id)
+                .then(res => {
+                    setPaymentListVisibility(false);
+                    setPaymentId(0);
+                    resetFormControls();
+                    setNotify({ isOpen: true, message: 'Deleted successfully.' });
+                })
+                .catch(err => console.log(err))
+        }
+    }
 
     return (
         <Table>
@@ -30,20 +49,22 @@ export default function PaymentList(){
                 {
                     paymentList.map(item=>(
                         <TableRow key={item.paymentId}>
-                            <TableCell>
+                            <TableCell onClick={e => showForUpdate(item.paymentId)}>
                                 {item.paymentNumber}
                             </TableCell>
-                            <TableCell>
+                            <TableCell onClick={e => showForUpdate(item.paymentId)}>
                                 {item.staff.staffName + " " + item.staff.staffSurname}
                             </TableCell>
-                            <TableCell>
+                            <TableCell onClick={e => showForUpdate(item.paymentId)}>
                                 {item.paymentType}
                             </TableCell>
-                            <TableCell>
+                            <TableCell onClick={e => showForUpdate(item.paymentId)}>
                                 {item.total}
                             </TableCell>
                             <TableCell>
-                                <DeleteSweepIcon color='secondary'/>
+                                <DeleteSweepIcon 
+                                color='secondary'
+                                onClick={e => deletePayment(item.paymentId)}/>
                             </TableCell>
                         </TableRow>
                     ))
